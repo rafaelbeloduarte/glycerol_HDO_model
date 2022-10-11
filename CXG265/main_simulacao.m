@@ -144,70 +144,76 @@ fitted = [fit_x_12P, fit_x_13P, fit_x_EG, fit_x_I, fit_x_M, fit_x_S, fit_x_G];
 csvwrite("residuals.csv", transpose(residuals));
 csvwrite("fitted.csv", transpose(fitted));
 
-line_width = 1;
+line_width = 2;
 font_size = 14;
 figure(1);
 clf;
 # 1,2-PDO
-plot(t, x_12P, "g", 'linewidth', line_width);
+c = [0 0.443 0.737];
+plot(t, x_12P, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_12P_exp, "g", "+", 'linewidth', line_width);
+scatter(t_exp, x_12P_exp, 20*line_width, c, "+", 'linewidth', line_width);
 hold on;
-plot(t, x_12P_lw, "g", 'linewidth', line_width/line_width, 'linestyle', ":");
+plot(t, x_12P_lw, 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_12P_up, "g", 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_12P_up, 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
 #1,3-PDO
-plot(t, x_13P, "m", 'linewidth', line_width);
+c = [0.847 0.322 0.094];
+plot(t, x_13P, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_13P_exp, "m", "o", 'linewidth', line_width);
+scatter(t_exp, x_13P_exp, 20*line_width, c, "o", 'linewidth', line_width);
 hold on;
-plot(t, x_13P_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":");
+plot(t, x_13P_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_13P_up, "m", 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_13P_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
 # EG
-plot(t, x_EG, "b", 'linewidth', line_width);
+c = [0.925 0.690 0.122];
+plot(t, x_EG, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_EG_exp, "b", "*", 'linewidth', line_width);
+scatter(t_exp, x_EG_exp, 20*line_width, c, "*", 'linewidth', line_width);
 hold on;
-plot(t, x_EG_lw, "b", 'linewidth', line_width/line_width, 'linestyle', ":");
+plot(t, x_EG_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_EG_up, "b", 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_EG_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
 # isobutil
-plot(t, x_I, "r", 'linewidth', line_width);
+c = [0.490 0.180 0.553];
+plot(t, x_I, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_I_exp, "r", "^", 'linewidth', line_width);
+scatter(t_exp, x_I_exp, 20*line_width, c, "^", 'linewidth', line_width);
 hold on;
-plot(t, x_I_lw, "r", 'linewidth', line_width/line_width, 'linestyle', ":");
+plot(t, x_I_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_I_up, "r", 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_I_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
 # methane
-plot(t, x_M, "c", 'linewidth', line_width);
+c = [0.463 0.671 0.184];
+plot(t, x_M, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_M_exp, "c", "v", 'linewidth', line_width);
+scatter(t_exp, x_M_exp, 20*line_width, c, "v", 'linewidth', line_width);
 hold on;
-plot(t, x_M_lw, "c", 'linewidth', line_width/line_width, 'linestyle', ":");
+plot(t, x_M_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_M_up, "c", 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_M_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
 # scopoletin
-plot(t, x_S, "k",'linewidth', line_width);
+c = [0.298 0.741 0.929];
+plot(t, x_S, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_S_exp, "k", "p", 'linewidth', line_width);
+scatter(t_exp, x_S_exp, 20*line_width, c, "p", 'linewidth', line_width);
 hold on;
-plot(t, x_S_lw, "k", 'linewidth', line_width/line_width, 'linestyle', ":");
+plot(t, x_S_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_S_up, "k", 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_S_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
 
 xlabel ("time (h)");
 ylabel ("Molar fraction");
 title("265^oC");
 set(gca, "linewidth", line_width, "fontsize", font_size, 'fontweight', "bold", "fontname", "Liberation Serif", "ylim", [-inf inf]);
-legend('x_{1,2-PDO}', 'x_{1,2-PDO, exp}',"x_{1,2-PDO, CI}","", 'x_{1,3-PDO}', 'x_{1,3-PDO, exp}',"x_{1,3-PDO, CI}","", 'x_{EG}', 'x_{EG,exp}',"x_{EG, CI}","", 'x_{I}', 'x_{I, exp}',"x_{I, CI}","", 'x_{CH_4}', 'x_{CH_4, exp}',"x_{CH_4, CI}","", 'x_{S}', 'x_{S, exp}',"x_{S, CI}","", 'fontsize', 10, 'fontweight', "bold", "linewidth", line_width,  'location', "eastoutside", "fontname", "Liberation Serif", "numcolumns", 2);
+legend('x_{1,2-PDO}', 'x_{1,2-PDO, exp}',"x_{1,2-PDO, CI}","", 'x_{1,3-PDO}', 'x_{1,3-PDO, exp}',"x_{1,3-PDO, CI}","", 'x_{EG}', 'x_{EG,exp}',"x_{EG, CI}","", 'x_{I}', 'x_{I, exp}',"x_{I, CI}","", 'x_{CH_4}', 'x_{CH_4, exp}',"x_{CH_4, CI}","", 'x_{S}', 'x_{S, exp}',"x_{S, CI}","", 'fontsize', 14, 'fontweight', "bold", "linewidth", line_width,  'location', "eastoutside", "fontname", "Liberation Serif", "numcolumns", 1);
 ##set(gca, "linewidth", line_width, "fontsize", font_size, 'fontweight', "bold", "fontname", "Liberation Serif", "ylim", [-inf inf]);
 ##legend('x_{1,2-PDO}', 'x_{1,2-PDO, exp}',"","", 'x_{1,3-PDO}', 'x_{1,3-PDO, exp}',"","", 'x_{EG}', 'x_{EG,exp}',"","", 'x_{I}', 'x_{I, exp}',"","", 'x_{CH_4}', 'x_{CH_4, exp}',"","", 'x_{S}', 'x_{S, exp}',"","", 'fontsize', 24, 'fontweight', "bold", "linewidth", line_width,  'location', "eastoutside", "fontname", "Liberation Serif");
 legend boxoff;
@@ -215,13 +221,13 @@ legend boxoff;
 ##
 ##    May be one of
 ##
-##    "--"
+##    ":"
 ##
 ##        Solid line. [default]
-##    "--"
+##    ":"
 ##
 ##        Dashed line.
-##    "--"
+##    ":"
 ##
 ##        Dotted line.
 ##    "-."
@@ -237,9 +243,9 @@ plot(t, x_G, 'k', 'linewidth', line_width);
 hold on;
 scatter(t_exp, x_G_exp, 'k', 'linewidth', line_width);
 hold on;
-plot(t, x_G_lw, 'k', 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_G_lw, 'k', 'linewidth', line_width/line_width, 'linestyle', ":");
 hold on;
-plot(t, x_G_up, 'k', 'linewidth', line_width/line_width, 'linestyle', "--");
+plot(t, x_G_up, 'k', 'linewidth', line_width/line_width, 'linestyle', ":");
 hold on;
 xlabel ("tempo (h)");
 ylabel ("Fração molar");

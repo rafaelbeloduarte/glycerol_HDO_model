@@ -47,7 +47,40 @@ constante = [2.9630e-02
   x_G = Y(:,6);
   x_M = Y(:,7);
 
-    res_x_12P = [];
+    CI_lw = [0.025836226820025
+0.0110760180651487
+0.0116690940498793
+0.0103526169715406
+0.156971349837816
+0.248089746012263
+1.93E-09];
+  Y0 = [0.00001 0.00001 0.00001 0.00001 0.00001 xG0 0.00001 transpose(CI_lw)];
+  [t Y_lw] = ode45(@odes, intervalo_t, Y0);
+  x_12P_lw = Y_lw(:,1);
+  x_13P_lw = Y_lw(:,2);
+  x_EG_lw = Y_lw(:,3);
+  x_S_lw = Y_lw (:,4);
+  x_I_lw = Y_lw(:,5);
+  x_G_lw = Y_lw(:,6);
+  x_M_lw = Y_lw(:,7);
+  CI_up = [0.0390736529128225
+0.025156086456079
+0.0251472134253731
+0.0243183269714325
+0.170141595215513
+0.262811251975622
+0.00253023200080499];
+  Y0 = [0.00001 0.00001 0.00001 0.00001 0.00001 xG0 0.00001 transpose(CI_up)];
+  [t Y_up] = ode45(@odes, intervalo_t, Y0);
+  x_12P_up = Y_up(:,1);
+  x_13P_up = Y_up(:,2);
+  x_EG_up = Y_up(:,3);
+  x_S_up = Y_up (:,4);
+  x_I_up = Y_up(:,5);
+  x_G_up = Y_up(:,6);
+  x_M_up = Y_up(:,7);
+
+  res_x_12P = [];
   res_x_13P = [];
   res_x_EG = [];
   res_x_S = [];
@@ -66,7 +99,7 @@ constante = [2.9630e-02
   for i = 1:1:length(t_exp)
     for j = 1:1:length(intervalo_t)
       dif = abs(t_exp(i) - intervalo_t(j));
-      if dif < 0.001
+      if dif < 0.0001
           res_x_12P(end+1) = x_12P(j) - x_12P_exp(i);
           fit_x_12P(end+1) = x_12P(j);
           res_x_13P(end+1) = x_13P(j) - x_13P_exp(i);
@@ -109,86 +142,110 @@ fitted = [fit_x_12P, fit_x_13P, fit_x_EG, fit_x_I, fit_x_M, fit_x_S, fit_x_G];
 csvwrite("residuals.csv", transpose(residuals));
 csvwrite("fitted.csv", transpose(fitted));
 
-figure(3);
-clf;
-scatter(fit_x_12P, res_x_12P, 'linewidth', line_width);
-hold on;
-scatter(fit_x_13P, res_x_13P, 'linewidth', line_width);
-hold on;
-scatter(fit_x_EG, res_x_EG, 'linewidth', line_width);
-hold on;
-scatter(fit_x_S, res_x_S, 'linewidth', line_width);
-hold on;
-scatter(fit_x_I, res_x_I, 'linewidth', line_width);
-hold on;
-#scatter(fit_x_G, res_x_G, 'linewidth', line_width);
-#hold on;
-scatter(fit_x_M, res_x_M, 'linewidth', line_width);
-hold on;
-xlabel ("Fitted molar fraction");
-ylabel ("Residual molar fraction");
-set(gca, "linewidth", line_width, "fontsize", font_size, "xaxislocation", "origin");
-#legend('Residual_{1,2PDO}', 'fontsize', font_size, 'location', "eastoutside");
-
-
-##marker
-##    ‘+’	crosshair
-##    ‘o’	circle
-##    ‘*’	star
-##    ‘.’	point
-##    ‘x’	cross
-##    ‘s’	square
-##    ‘d’	diamond
-##    ‘^’	upward-facing triangle
-##    ‘v’	downward-facing triangle
-##    ‘>’	right-facing triangle
-##    ‘<’	left-facing triangle
-##    ‘p’	pentagram
-##    ‘h’	hexagram
-% Gerando o gráfico
-
 line_width = 2;
-font_size = 16;
+font_size = 14;
 figure(1);
 clf;
-plot(t, x_12P, 'linewidth', line_width);
+# 1,2-PDO
+c = [0 0.443 0.737];
+plot(t, x_12P, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_12P_exp, "+", 'linewidth', line_width);
+scatter(t_exp, x_12P_exp, 20*line_width, c, "+", 'linewidth', line_width);
 hold on;
-plot(t, x_13P, 'linewidth', line_width);
+plot(t, x_12P_lw, 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-scatter(t_exp, x_13P_exp, "o", 'linewidth', line_width);
+plot(t, x_12P_up, 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_EG, 'linewidth', line_width);
+#1,3-PDO
+c = [0.847 0.322 0.094];
+plot(t, x_13P, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_EG_exp, "*", 'linewidth', line_width);
+scatter(t_exp, x_13P_exp, 20*line_width, c, "o", 'linewidth', line_width);
 hold on;
-plot(t, x_I, 'linewidth', line_width);
+plot(t, x_13P_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-scatter(t_exp, x_I_exp, "^", 'linewidth', line_width);
+plot(t, x_13P_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-plot(t, x_M, 'linewidth', line_width);
+# EG
+c = [0.925 0.690 0.122];
+plot(t, x_EG, 'linewidth', line_width, 'color', c);
 hold on;
-scatter(t_exp, x_M_exp, "v", 'linewidth', line_width);
+scatter(t_exp, x_EG_exp, 20*line_width, c, "*", 'linewidth', line_width);
 hold on;
-plot(t, x_S, 'linewidth', line_width);
+plot(t, x_EG_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
-scatter(t_exp, x_S_exp, "p", 'linewidth', line_width);
+plot(t, x_EG_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
 hold on;
+# isobutil
+c = [0.490 0.180 0.553];
+plot(t, x_I, 'linewidth', line_width, 'color', c);
+hold on;
+scatter(t_exp, x_I_exp, 20*line_width, c, "^", 'linewidth', line_width);
+hold on;
+plot(t, x_I_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
+hold on;
+plot(t, x_I_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
+hold on;
+# methane
+c = [0.463 0.671 0.184];
+plot(t, x_M, 'linewidth', line_width, 'color', c);
+hold on;
+scatter(t_exp, x_M_exp, 20*line_width, c, "v", 'linewidth', line_width);
+hold on;
+plot(t, x_M_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
+hold on;
+plot(t, x_M_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
+hold on;
+# scopoletin
+c = [0.298 0.741 0.929];
+plot(t, x_S, 'linewidth', line_width, 'color', c);
+hold on;
+scatter(t_exp, x_S_exp, 20*line_width, c, "p", 'linewidth', line_width);
+hold on;
+plot(t, x_S_lw, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
+hold on;
+plot(t, x_S_up, "m", 'linewidth', line_width/line_width, 'linestyle', ":", 'color', c);
+hold on;
+
 xlabel ("time (h)");
 ylabel ("Molar fraction");
 title("275^oC");
-set(gca, "linewidth", line_width, "fontsize", font_size, 'fontweight', "bold", "fontname", "Liberation Serif");
-legend('x_{1,2-PDO}', 'x_{1,2-PDO, exp}', 'x_{1,3-PDO}', 'x_{1,3-PDO, exp}', 'x_{EG}', 'x_{EG,exp}', 'x_{I}', 'x_{I, exp}', 'x_{CH_4}', 'x_{CH_4, exp}', 'x_{S}', 'x_{S, exp}', 'fontsize', font_size, 'fontweight', "bold", "linewidth", line_width,  'location', "eastoutside", "fontname", "Liberation Serif");
+set(gca, "linewidth", line_width, "fontsize", font_size, 'fontweight', "bold", "fontname", "Liberation Serif", "ylim", [-inf inf]);
+legend('x_{1,2-PDO}', 'x_{1,2-PDO, exp}',"x_{1,2-PDO, CI}","", 'x_{1,3-PDO}', 'x_{1,3-PDO, exp}',"x_{1,3-PDO, CI}","", 'x_{EG}', 'x_{EG,exp}',"x_{EG, CI}","", 'x_{I}', 'x_{I, exp}',"x_{I, CI}","", 'x_{CH_4}', 'x_{CH_4, exp}',"x_{CH_4, CI}","", 'x_{S}', 'x_{S, exp}',"x_{S, CI}","", 'fontsize', 14, 'fontweight', "bold", "linewidth", line_width,  'location', "eastoutside", "fontname", "Liberation Serif", "numcolumns", 1);
+##set(gca, "linewidth", line_width, "fontsize", font_size, 'fontweight', "bold", "fontname", "Liberation Serif", "ylim", [-inf inf]);
+##legend('x_{1,2-PDO}', 'x_{1,2-PDO, exp}',"","", 'x_{1,3-PDO}', 'x_{1,3-PDO, exp}',"","", 'x_{EG}', 'x_{EG,exp}',"","", 'x_{I}', 'x_{I, exp}',"","", 'x_{CH_4}', 'x_{CH_4, exp}',"","", 'x_{S}', 'x_{S, exp}',"","", 'fontsize', 24, 'fontweight', "bold", "linewidth", line_width,  'location', "eastoutside", "fontname", "Liberation Serif");
 legend boxoff;
+##linestyle
+##
+##    May be one of
+##
+##    ":"
+##
+##        Solid line. [default]
+##    ":"
+##
+##        Dashed line.
+##    ":"
+##
+##        Dotted line.
+##    "-."
+##
+##        A dash-dot line.
+##    "none"
+##
+##        No line. Points will still be marked using the current Marker Style.
 
 figure(2);
 clf;
-plot(t, x_G, 'linewidth', line_width);
+plot(t, x_G, 'k', 'linewidth', line_width);
 hold on;
-scatter(t_exp, x_G_exp, 'linewidth', line_width);
+scatter(t_exp, x_G_exp, 'k', 'linewidth', line_width);
+hold on;
+plot(t, x_G_lw, 'k', 'linewidth', line_width/line_width, 'linestyle', ":");
+hold on;
+plot(t, x_G_up, 'k', 'linewidth', line_width/line_width, 'linestyle', ":");
 hold on;
 xlabel ("tempo (h)");
 ylabel ("Fração molar");
 set(gca, "linewidth", line_width, "fontsize", font_size);
-legend('x_{Glicerol}', 'x_{Glicerol, exp}', 'fontsize', font_size, 'location', "eastoutside");
+legend('x_{Glicerol}', 'x_{Glicerol, exp}',"","", 'fontsize', font_size, 'location', "eastoutside");

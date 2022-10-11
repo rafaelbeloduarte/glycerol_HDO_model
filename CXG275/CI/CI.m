@@ -1,7 +1,6 @@
 pkg load statistics
 % first simulation to extract initial residuals
 t_range = 0:1:6;
-% f_val = 0,3367
 k0 = [0.0711266099963456
 0.0142443243265413
 0.0193547518424003
@@ -10,7 +9,7 @@ k0 = [0.0711266099963456
 0.283905370037338
 0.0023480527582845];
 
-  % Vetor Condições iniciais
+  % Initial conditions
   xG0 = 0.697; % mol/L
   Y0 = [0.00001 0.00001 0.00001 0.00001 0.00001 xG0 0.00001 transpose(k0)];
 
@@ -32,9 +31,9 @@ k0 = [0.0711266099963456
 
   x = [x_12P_exp', x_13P_exp',x_EG_exp',x_S_exp',x_I_exp',x_G_exp',x_M_exp'];
 
-  % Resolução das EDOs utilizando o método de Dormand-Prince de ordem 4
+  % ODEs solution using Dormand-Prince method of order 4
   [t Y] = ode45(@(t, Y) odes(t, Y), t_range, Y0);
-  % Abrindo o vetor solução em suas componentes
+  % dividing solution matrix into individual vectors
   x_12P = [];
   x_13P = [];
   x_EG = [];
@@ -104,9 +103,6 @@ hist(res_boot_12P);
 % end of first simulation, residuals extracted
 
 # now we start bootstraping confidence intervals
-% load the package for bootstraping
-pkg load statistics-bootstrap
-
 n_boot = 7 % use multiples of the total time
 ##t_boot = (0:6/n_boot:6-6/n_boot)';
 t_boot=t_range;
@@ -115,10 +111,17 @@ t_boot=t_range;
 X0 = [0.00001, 0.00001, 0.00001, 0.00001, 0.00001, xG0, 0.00001];
 csvwrite("k0.csv", k0');
 k_distribution = [];
-n = 2000;
+n = 5000;
 [t X] = ode45(@(t, X) odes_boot(t,X,k0), t_boot, X0);
 % recalculating k_j from bootstrapped residuals n times
 k = k0;
+x_12P_exp_boot = [];
+x_13P_exp_boot = [];
+x_EG_exp_boot = [];
+x_S_exp_boot = [];
+x_I_exp_boot = [];
+x_G_exp_boot = [];
+x_M_exp_boot = [];
 for i = 1:1:n
   i
   e_x_12P_boot = boot(res_boot_12P, n_boot);
@@ -131,9 +134,17 @@ for i = 1:1:n
   E_X = [e_x_12P_boot; e_x_13P_boot; e_x_EG_boot; e_x_S_boot; e_x_I_boot; e_x_G_boot; e_x_M_boot];
   % adding x_j bootstrap residuals (to get x_j*)
   X_boot = X + E_X;
+##  scatter(t_boot, X_boot(:,1))
+  x_12P_exp_boot = [x_12P_exp_boot, X_boot(:,1)];
+  x_13P_exp_boot = [x_13P_exp_boot, X_boot(:,2)];
+  x_EG_exp_boot = [x_EG_exp_boot, X_boot(:,3)];
+  x_S_exp_boot = [x_S_exp_boot, X_boot(:,4)];
+  x_I_exp_boot = [x_I_exp_boot, X_boot(:,5)];
+  x_G_exp_boot = [x_G_exp_boot, X_boot(:,6)];
+  x_M_exp_boot = [x_M_exp_boot, X_boot(:,7)];
   [k, fval, info, output, grad, hess] = fminunc(@(k0) f_diff_sqr_boot(k0, X_boot, t_boot), k0);
   k
-  % salvando os k_j
+  % salving the k_j
   k_distribution = [k_distribution;k'];
 endfor
 k_distribution = k_distribution(all(k_distribution > 0, 2), :);
@@ -182,3 +193,25 @@ CONFIDENCE_INTERVALS = [CI_lw_12P, CI_up_12P;
 csvwrite("dist_k.csv", k_distribution);
 ##dlmwrite('dist_k.csv',k_distribution,'delimiter',',','-append');
 csvwrite("CI.csv", CONFIDENCE_INTERVALS);
+
+e_x_12P = [];
+e_x_13P = [];
+e_x_EG = [];
+e_x_S = [];
+e_x_I = [];
+e_x_G = [];
+e_x_M = [];
+for i = 1:1:length(x_12P_exp_boot(:,1))
+  e_x_12P(end+1) = std(x_12P_exp_boot(i,:));
+  e_x_13P(end+1) = std(x_13P_exp_boot(i,:));
+  e_x_EG(end+1) = std(x_EG_exp_boot(i,:));
+  e_x_S(end+1) = std(x_S_exp_boot(i,:));
+  e_x_I(end+1) = std(x_I_exp_boot(i,:));
+  e_x_G(end+1) = std(x_G_exp_boot(i,:));
+  e_x_M(end+1) = std(x_M_exp_boot(i,:));
+endfor
+hist(e_x_12P);
+
+errors = [e_x_12P; e_x_13P; e_x_EG; e_x_S; e_x_I; e_x_G; e_x_M];
+
+csvwrite("errors.csv", errors);
